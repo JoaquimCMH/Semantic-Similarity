@@ -1,0 +1,54 @@
+-- # QUERY NECESSARIA PARA A ESCRITA DO ARTIGO DO CSEDU 2016 #
+
+-- * TIPOS DE QUESTOES CAPTURADAS
+--     Perguntas com mais de 3 repostas (OK)
+--     Perguntas que contem uma melhor resposta (OK)
+
+
+DECLARE @type_question int = 1; -- questao
+DECLARE @type_answer int = 2; -- resposta
+DECLARE @min_amount_answer int = 3; -- min. quantidade de respostas por questao
+
+
+WITH 
+
+------------------ INICIO DO GET_QUESTIONS  
+GET_QUESTIONS (
+id_question,
+answer_count,
+body_question,
+id_author_question,
+name_author_question,
+reputation_author_question
+) 
+
+AS
+
+(
+    SELECT TOP 20 
+    post.Id AS id_question,
+    post.AnswerCount as answer_count,
+    post.Body AS body_question,
+    post.OwnerUserId AS id_author_question,
+    usr.DisplayName AS name_author_question,
+    usr.Reputation AS reputation_author_question
+    --
+    FROM Posts post JOIN Users usr on post.OwnerUserId = usr.Id
+    --
+    WHERE post.PostTypeId = @type_question -- tipo do post (pergunta/resposta)
+    AND post.AnswerCount > @min_amount_answer -- numero minimo de respostas
+    AND post.AcceptedAnswerId != '' -- questões com uma melhor resposta selecionada 
+) 
+------------------ FIM DO GET_QUESTIONS 
+
+
+-- SELECT 
+
+SELECT get_questions.*
+  
+FROM GET_QUESTIONS get_questions;
+
+
+
+
+
