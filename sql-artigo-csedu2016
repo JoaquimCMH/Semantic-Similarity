@@ -16,6 +16,7 @@ WITH
 GET_QUESTIONS (
 id_question,
 answer_count,
+AcceptedAnswerId,
 body_question,
 id_author_question,
 name_author_question,
@@ -25,9 +26,10 @@ reputation_author_question
 AS
 
 (
-    SELECT TOP 20 
+    SELECT TOP 3
     post.Id AS id_question,
     post.AnswerCount as answer_count,
+    AcceptedAnswerId,
     post.Body AS body_question,
     post.OwnerUserId AS id_author_question,
     usr.DisplayName AS name_author_question,
@@ -39,14 +41,42 @@ AS
     AND post.AnswerCount > @min_amount_answer -- numero minimo de respostas
     AND post.AcceptedAnswerId != '' -- questões com uma melhor resposta selecionada 
 ) 
+
 ------------------ FIM DO GET_QUESTIONS 
+,
+------------------ INICIO DO GET_ANSWERS 
+
+GET_ANSWERS
+
+AS
+
+(
+    SELECT
+    post.Id AS id_answer,
+    post.Body AS body_answer,
+    post.OwnerUserId AS id_author_answer,
+    usr.DisplayName AS name_author_answer,
+    usr.Reputation AS reputation_author_answer,
+    post.Score AS score_answer,
+    post.ParentId AS id_parent
+    --
+    FROM Posts post JOIN Users usr on post.OwnerUserId = usr.Id
+    --
+    WHERE post.PostTypeId = @type_answer -- tipo do post (pergunta/resposta)
+)
+------------------ FIM DO GET_ANSWERS
 
 
--- SELECT 
 
-SELECT get_questions.*
+
+------------------ GET ALL 
+
+SELECT get_questions.*, get_answers.*,
+(case when get_questions.AcceptedAnswerId = get_answers.id_answer then 'TRUE' else 'FALSE' end) as accepted_answer
   
-FROM GET_QUESTIONS get_questions;
+FROM GET_QUESTIONS get_questions
+LEFT JOIN GET_ANSWERS get_answers ON get_questions.id_question = get_answers.id_parent
+;
 
 
 
