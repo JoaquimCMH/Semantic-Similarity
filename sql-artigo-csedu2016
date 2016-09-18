@@ -26,7 +26,7 @@ reputation_author_question
 AS
 
 (
-    SELECT TOP 3
+    SELECT TOP 1687
     post.Id AS id_question,
     post.AnswerCount as answer_count,
     AcceptedAnswerId,
@@ -75,10 +75,4 @@ SELECT get_questions.*, get_answers.*,
 (case when get_questions.AcceptedAnswerId = get_answers.id_answer then 'TRUE' else 'FALSE' end) as accepted_answer
   
 FROM GET_QUESTIONS get_questions
-LEFT JOIN GET_ANSWERS get_answers ON get_questions.id_question = get_answers.id_parent
-;
-
-
-
-
-
+LEFT JOIN GET_ANSWERS get_answers ON get_questions.id_question = get_answers.id_parent;
