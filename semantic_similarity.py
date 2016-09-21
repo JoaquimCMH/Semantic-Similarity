@@ -5,12 +5,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # diretorio dataset
 directory_dataset = 'data_academia.csv'
 
-# MENSAGEM DE QUANDO DA TUDO CERTO O//
-def ok ():
-    print("----------")
-    print("OK.")
-    print("----------")
-
 def calc_tfidf():
     with open('data_academia_results.csv', 'w') as csvfile:
         # fields do csv
